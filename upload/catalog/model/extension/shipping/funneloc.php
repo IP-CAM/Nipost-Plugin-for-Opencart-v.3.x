@@ -79,7 +79,7 @@ class ModelExtensionShippingFunneloc extends Model {
             $url = 'http://test.funnel.ng';
             $curl = curl_init();       
             curl_setopt_array($curl, array(
-                CURLOPT_URL => $url . "/api/v1/shipping/calculate?weight=".$weight."&shipTo=".urlencode($address['zone'])."&areaTo=".urlencode($address['city'])."&items=".serialize($all_weights),
+                CURLOPT_URL => $url . "/api/v1/shipping/calculate?weight=".$weight."&shipTo=".urlencode($address['zone'])."&areaTo=".urlencode($address['city'])."&items=".json_encode($all_weights),
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,

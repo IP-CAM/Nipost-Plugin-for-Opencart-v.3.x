@@ -15,7 +15,7 @@ class ControllerExtensionShippingFunneloc extends Controller {
         $data['description'] = '';
         $data['customerAddress'] = $order['payment_address_1'] . ', '. $order['payment_city'] . ', '. $order['payment_zone'] ;
         $data['customerPhone'] = $order['telephone'];
-        $data['itemsList'] = serialize($this->session->data['shipping_funnel_oc_cart_items']);
+        $data['itemsList'] = json_encode($this->session->data['shipping_funnel_oc_cart_items']);
         $data['sessionId'] = $this->session->data['shipping_funnel_request_session_id'];
 
         $curl = curl_init();
@@ -41,11 +41,11 @@ class ControllerExtensionShippingFunneloc extends Controller {
         
         curl_close($curl);
     
-        if ($err) {
-  //            echo "cURL Error #:" . $err;
-        } else {        
-//             print_r($response);            
-        }
+        // if ($err) {
+        //       echo "cURL Error #:" . $err;
+        // } else {        
+        //      print_r($response);            
+        // }
 
        // die();
 	}
