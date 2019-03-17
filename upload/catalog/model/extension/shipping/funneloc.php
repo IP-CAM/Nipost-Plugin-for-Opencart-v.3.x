@@ -17,6 +17,7 @@ class ModelExtensionShippingFunneloc extends Model {
      
         $method_data = array();
      
+        
         if ($status) {
             //Process
             $weight = $totalWeight= $this->cart->getWeight();
@@ -38,8 +39,8 @@ class ModelExtensionShippingFunneloc extends Model {
                                     ];
                 $count++;
             }
-//print_r($all_weights);
 
+            
             $cartInfo['items'] = $orderItems;
             $cartInfo['count'] = $count;
             $cartInfo['totalWeight'] = $totalWeight;
@@ -54,7 +55,6 @@ class ModelExtensionShippingFunneloc extends Model {
 				'company_name' => $this->config->get('config_name')
             );
             ?>
-            <!-- <?php //print_r($this->session); ?> -->
             <?php
             if(!$address) {
                 $address = $this->session->data['shipping_address'];
@@ -75,7 +75,7 @@ class ModelExtensionShippingFunneloc extends Model {
             if($address['zone'] == 'Abuja Federal Capital Territory') {
                 $address['zone'] = 'Abuja';
             }
-            //print_r($address);
+
             $url = 'http://test.funnel.ng';
             $curl = curl_init();       
             curl_setopt_array($curl, array(
@@ -93,21 +93,18 @@ class ModelExtensionShippingFunneloc extends Model {
         
             $response = curl_exec($curl);
             $err = curl_error($curl);
-          ///  print_r($response);
             curl_close($curl);
         
-                if ($err) {
+                    //return "cURL Error #: " . $err;
             
-                    return "cURL Error #: " . $err;
-            
-                } else {    
+                if (!$err) {
 
                     $data = json_decode($response, true);
-                        $this->session->data['shipping_funnel_request_session_id'] = $data['requestSessionId'];
-
-                        if(!$data['data']) {
-                            return 'We do not offer delivery services your destination yet';
-                        } else {
+                    
+                    if($data) {
+                                // 'We do not offer delivery services your destination yet';
+                        if(isset($data['data'])) {
+                            $this->session->data['shipping_funnel_request_session_id'] = $data['requestSessionId'];
                             $quote_data = array();    
                             $count;
                             foreach($data['data'] as $key => $shipper) {
@@ -128,14 +125,20 @@ class ModelExtensionShippingFunneloc extends Model {
                                 }
 
                             }                
-                            $method_data = array(
-                                'code'     => 'funneloc',
-                                'title'    => 'Delivery Options',
-                                'quote'    => $quote_data,
-                                'sort_order' => $this->config->get('shipping_funneloc_sort_order'),
-                                'error'    => false
-                            );                
+                            if(!empty($quote_data)) {
+                                $method_data = array(
+                                    'code'     => 'funneloc',
+                                    'title'    => 'Delivery Options',
+                                    'quote'    => $quote_data,
+                                    'sort_order' => $this->config->get('shipping_funneloc_sort_order'),
+                                    'error'    => false
+                                );                
+    
+                            }
                         }
+
+                    }
+
                 }
             }
         }
